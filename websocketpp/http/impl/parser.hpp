@@ -204,7 +204,7 @@ inline bool parser::prepare_body(lib::error_code & ec) {
         // I believe this will only work up to 32bit sizes. Is there a need for
         // > 4GiB HTTP payloads?
         m_body_bytes_total = m_body_bytes_needed = std::strtoul(cl_header.c_str(),&end,10);
-		if (end != cl_header.cend().base()) {
+		if (end != &*cl_header.cend()) {
 			ec = error::make_error_code(error::invalid_format);
             return false;
 		}
@@ -247,7 +247,7 @@ inline size_t parser::process_body(char const * buf, size_t len,
 			char * end;
 			m_body_bytes_needed = std::strtoul(chunkSizeHex.c_str(),&end,16);
 			m_body_bytes_total += m_body_bytes_needed;
-			if (end != chunkSizeHex.cend().base()) {
+			if (end != &*chunkSizeHex.cend()) {
 				ec = error::make_error_code(error::invalid_format);
 				return 0;
 			}
